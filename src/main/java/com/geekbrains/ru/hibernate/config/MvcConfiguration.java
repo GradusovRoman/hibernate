@@ -6,7 +6,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.file.Paths;
 
-
 @Configuration
 public class MvcConfiguration implements WebMvcConfigurer {
 
