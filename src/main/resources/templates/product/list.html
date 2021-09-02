@@ -22,7 +22,6 @@
                         <h5 th:text="${p.title}" class="card-title">Product title</h5>
                         <p th:text="'Цена: ' + ${p.price} + ' руб.'" class="card-text">Price</p>
                         <p th:text="'Категория: ' + ${p.getCategoriesName()}" class="card-text">Category</p>
-
                         <div class="justify-content ">
                             <a th:href="@{/product/form(id=${p.id})}" href="#" class="btn btn-primary">Редактировать</a>
                             <a th:href="@{/product/delete(id=${p.id})}" href="#" class="btn btn-danger">Удалить</a>
