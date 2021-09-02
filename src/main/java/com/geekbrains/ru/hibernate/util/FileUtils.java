@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+
 public class FileUtils {
 
     private static final String IMAGE_FOLDER_PATH = "/data/images";
