@@ -1,9 +1,11 @@
 package com.geekbrains.ru.hibernate.service.impl;
 
 import com.geekbrains.ru.hibernate.domain.CategoryEntity;
+import com.geekbrains.ru.hibernate.domain.dto.CategoryDto;
 import com.geekbrains.ru.hibernate.domain.dto.CategoryTree;
 import com.geekbrains.ru.hibernate.repository.CategoryRepository;
 import com.geekbrains.ru.hibernate.service.CategoryService;
+import com.geekbrains.ru.hibernate.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
@@ -59,6 +61,22 @@ public class CategoryServiceImpl implements CategoryService {
                 .rootCategories(rootEntries)
                 .build();
     }
+
+    @Override
+    public Set<CategoryDto> getCategoriesByProductId(Long id) {
+        Set<CategoryEntity> entities = categoryRepository.findByProducts_Id(id);
+        return entities.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toSet());
+    }
+
+    private CategoryDto convertToDto (CategoryEntity entity) {
+        return CategoryDto.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .build();
+    }
+
 
     private List<CategoryTree.TreeEntry> convertToTreeEntries(Set<CategoryEntity> rootCategories) {
         if (CollectionUtils.isEmpty(rootCategories)) return Collections.emptyList();

@@ -1,5 +1,7 @@
 package com.geekbrains.ru.hibernate.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,6 +21,9 @@ import java.util.stream.Collectors;
 @Table(name = "product")
 @ToString(exclude = {"categories"})
 @EqualsAndHashCode(exclude = {"id", "categories"})
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class ProductEntity {
 
     @Id

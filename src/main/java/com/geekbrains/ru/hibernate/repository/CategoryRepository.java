@@ -14,5 +14,7 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
     Optional<CategoryEntity> findByAlias(String alias);
     Set<CategoryEntity> findAllByParentCategoryIsNull();
 
+    Set<CategoryEntity> findByProducts_Id(Long productId);
+
 
 }

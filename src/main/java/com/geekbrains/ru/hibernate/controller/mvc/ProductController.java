@@ -1,7 +1,6 @@
-package com.geekbrains.ru.hibernate.controller;
+package com.geekbrains.ru.hibernate.controller.mvc;
 
 import com.geekbrains.ru.hibernate.domain.ProductEntity;
-import com.geekbrains.ru.hibernate.domain.dto.ProductEntitySearchByPrice;
 import com.geekbrains.ru.hibernate.repository.ProductRepository;
 import com.geekbrains.ru.hibernate.service.CategoryService;
 import com.geekbrains.ru.hibernate.service.ProductService;
@@ -23,10 +22,11 @@ import javax.validation.Validator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.geekbrains.ru.hibernate.domain.constant.RequestNameConstant.PRODUCT;
+
 @Controller
-//@RestController
 @AllArgsConstructor
-@RequestMapping("/product")
+@RequestMapping(PRODUCT)
 public class ProductController {
 
     private final ProductService productService;
@@ -43,7 +43,7 @@ public class ProductController {
                               @RequestParam(value = "category", required = false) String categoryAlias,
                               @RequestParam(value = "title", required = false) String title,
                               Model model) {
-        final int pageSize = 5;
+        final int pageSize = 10;
         Page<ProductEntity> page;
         Pageable pageRequest = PageRequest.of(pageNum == null ? 0 : pageNum, pageSize);
         if (minPrice == null) minPrice = 0.0;
@@ -62,7 +62,6 @@ public class ProductController {
         } else {
             page = productRepository.findByPriceBetween(pageRequest, minPrice, maxPrice);
         }
-        model.addAttribute("priceRange", new ProductEntitySearchByPrice(0.0, 99000.0));
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
         model.addAttribute("title", title);
@@ -78,8 +77,8 @@ public class ProductController {
                                  @ModelAttribute(value = "violations") String violations) {
 
         if (id != null) {
-            ProductEntity product = productService.findById(id);
-            model.addAttribute("product", product);
+            ProductEntity productById = productService.findById(id);
+            model.addAttribute("product", productById);
         } else {
             model.addAttribute("product", new ProductEntity());
         }

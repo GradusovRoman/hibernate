@@ -1,4 +1,4 @@
-package com.geekbrains.ru.hibernate.controller;
+package com.geekbrains.ru.hibernate.controller.mvc;
 
 import com.geekbrains.ru.hibernate.domain.CategoryEntity;
 import com.geekbrains.ru.hibernate.service.CategoryService;
@@ -15,9 +15,11 @@ import javax.validation.Validator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.geekbrains.ru.hibernate.domain.constant.RequestNameConstant.CATEGORY;
+
 @Controller
 @AllArgsConstructor
-@RequestMapping("/category")
+@RequestMapping(CATEGORY)
 public class CategoryController {
 
     private CategoryService categoryService;
