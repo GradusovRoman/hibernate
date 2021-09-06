@@ -17,5 +17,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     Page<ProductEntity> findByPriceLessThan(Pageable pageable,Double maxPrice);
     Page<ProductEntity> findByPriceBetween (Pageable pageable, Double minPrice,Double maxPrice);
 
-    Page<ProductEntity> findByTitleLike(Pageable pageable,String title);
+    Page<ProductEntity> findByTitleIsLikeIgnoreCase (Pageable pageable,String title);
 }

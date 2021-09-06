@@ -1,11 +1,13 @@
 package com.geekbrains.ru.hibernate.controller;
 
 import com.geekbrains.ru.hibernate.domain.ProductEntity;
+import com.geekbrains.ru.hibernate.domain.dto.ProductEntitySearchByPrice;
 import com.geekbrains.ru.hibernate.repository.ProductRepository;
 import com.geekbrains.ru.hibernate.service.CategoryService;
 import com.geekbrains.ru.hibernate.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,17 +36,39 @@ public class ProductController {
     private final Validator validator;
 
     @GetMapping("/list")
-    public String getProducts(@RequestParam(required = false) Integer pageNum,
+
+    public String getProducts(@RequestParam(value = "pageNum", required = false) Integer pageNum,
+                              @RequestParam(value = "minPrice", required = false) Double minPrice,
+                              @RequestParam(value = "maxPrice", required = false) Double maxPrice,
                               @RequestParam(value = "category", required = false) String categoryAlias,
+                              @RequestParam(value = "title", required = false) String title,
                               Model model) {
-
         final int pageSize = 5;
-
+        Page<ProductEntity> page;
         Pageable pageRequest = PageRequest.of(pageNum == null ? 0 : pageNum, pageSize);
-        Page<ProductEntity> page = productService.findAllByPageAndCategory(pageRequest, categoryAlias);
+        if (minPrice == null) minPrice = 0.0;
+        if (maxPrice == null) maxPrice = 0.0;
 
+        if (minPrice == 0 && maxPrice == 0 && StringUtils.isBlank(title)) {
+            page = productService.findAllByPageAndCategory(pageRequest, categoryAlias);
+        } else if (!StringUtils.isBlank(title)) {
+            page = productRepository.findByTitleIsLikeIgnoreCase(pageRequest, title);
+        } else if (minPrice != 0.0 & maxPrice == 0.0) {
+
+            page = productRepository.findByPriceGreaterThan(pageRequest, maxPrice);
+        } else if (maxPrice != 0.0 & minPrice == 0.0) {
+
+            page = productRepository.findByPriceLessThan(pageRequest, maxPrice);
+        } else {
+            page = productRepository.findByPriceBetween(pageRequest, minPrice, maxPrice);
+        }
+        model.addAttribute("priceRange", new ProductEntitySearchByPrice(0.0, 99000.0));
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("title", title);
         model.addAttribute("page", page);
         model.addAttribute("categoryTree", categoryService.getCategoryTree());
+
 
         return "product/list";
     }
@@ -92,68 +116,6 @@ public class ProductController {
         productService.deleteById(id);
 
         return new RedirectView("/product/list");
-    }
-
-
-    //    http://localhost:8090/product/list/greater?minPrice=120
-    @GetMapping("/list/greater")
-    public String getProductsByMinPrice(@RequestParam(name = "minPrice", required = false) Double minPrice,
-                                        @RequestParam(value = "category", required = false) String categoryAlias,
-                                        @RequestParam(required = false) Integer pageNum, Model model,
-                                        @ModelAttribute(value = "violations") String violations) {
-        final int pageSize = 5;
-        Pageable pageRequest = PageRequest.of(pageNum == null ? 0 : pageNum, pageSize);
-        Page<ProductEntity> page = productRepository.findByPriceGreaterThan(pageRequest, minPrice);
-        model.addAttribute("page", page);
-        model.addAttribute("categoryTree", categoryService.getCategoryTree());
-        return "product/list";
-    }
-
-
-    //    http://localhost:8090/product/list/lower?maxPrice=200
-    @GetMapping("/list/lower")
-    public String getProductsByMaxPrice(@RequestParam(name = "maxPrice", required = false) Double maxPrice,
-                                        @RequestParam(value = "category", required = false) String categoryAlias,
-                                        @RequestParam(required = false) Integer pageNum, Model model,
-                                        @ModelAttribute(value = "violations") String violations) {
-        final int pageSize = 5;
-
-        Pageable pageRequest = PageRequest.of(pageNum == null ? 0 : pageNum, pageSize);
-        Page<ProductEntity> page = productRepository.findByPriceLessThan(pageRequest, maxPrice);
-        model.addAttribute("page", page);
-        model.addAttribute("categoryTree", categoryService.getCategoryTree());
-        return "product/list";
-    }
-
-    //    http://localhost:8090/product/list/between?minPrice=130&maxPrice=900
-    @GetMapping("/list/between")
-    public String getProductsByPriceBetween(@RequestParam(name = "minPrice") Double minPrice,
-                                            @RequestParam(name = "maxPrice") Double maxPrice,
-                                            @RequestParam(value = "category", required = false) String categoryAlias,
-                                            @RequestParam(required = false) Integer pageNum, Model model) {
-        final int pageSize = 5;
-
-        Pageable pageRequest = PageRequest.of(pageNum == null ? 0 : pageNum, pageSize);
-        Page<ProductEntity> page = productRepository.findByPriceBetween(pageRequest, minPrice, maxPrice);
-
-        model.addAttribute("page", page);
-        model.addAttribute("categoryTree", categoryService.getCategoryTree());
-        return "product/list";
-    }
-
-    //    http://localhost:8090/product/list/findByName?title=Spider-man
-    @GetMapping("/list/findByName")
-    public String getProductsByName(@RequestParam(name = "title") String title,
-
-                                    @RequestParam(value = "category", required = false) String categoryAlias,
-                                    @RequestParam(required = false) Integer pageNum, Model model) {
-        final int pageSize = 5;
-
-        Pageable pageRequest = PageRequest.of(pageNum == null ? 0 : pageNum, pageSize);
-        Page<ProductEntity> page = productRepository.findByTitleLike(pageRequest, title);
-        model.addAttribute("page", page);
-        model.addAttribute("categoryTree", categoryService.getCategoryTree());
-        return "product/list";
     }
 
 
