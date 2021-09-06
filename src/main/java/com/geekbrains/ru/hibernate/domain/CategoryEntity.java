@@ -1,9 +1,14 @@
 package com.geekbrains.ru.hibernate.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -15,6 +20,9 @@ import java.util.Set;
 @Table(name = "category")
 @ToString(exclude = {"products", "subCategories"})
 @EqualsAndHashCode(exclude = {"id", "products", "subCategories"})
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
 public class CategoryEntity {
 
     @Id
@@ -27,10 +35,17 @@ public class CategoryEntity {
     @NotBlank(message = "Алиас категории обязателен")
     private String alias;
 
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private CategoryEntity parentCategory;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "parentCategory")
     private Set<CategoryEntity> subCategories;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "categories")
+    private Set<ProductEntity> products = new HashSet<>();
 }

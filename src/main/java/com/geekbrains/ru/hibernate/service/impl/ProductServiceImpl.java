@@ -2,6 +2,8 @@ package com.geekbrains.ru.hibernate.service.impl;
 
 import com.geekbrains.ru.hibernate.domain.CategoryEntity;
 import com.geekbrains.ru.hibernate.domain.ProductEntity;
+import com.geekbrains.ru.hibernate.domain.ProductSearchCondition;
+import com.geekbrains.ru.hibernate.domain.dto.ProductDto;
 import com.geekbrains.ru.hibernate.repository.ProductRepository;
 import com.geekbrains.ru.hibernate.service.CategoryService;
 import com.geekbrains.ru.hibernate.service.ProductService;
@@ -9,7 +11,9 @@ import com.geekbrains.ru.hibernate.util.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,8 +36,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductEntity findById(long id) {
-        return productRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public ProductEntity findById(Long id) {
+        return  productRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
     }
 
     @Override
@@ -52,6 +57,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Page<ProductEntity> findAllBySearchCondition(ProductSearchCondition searchCondition) {
+        Pageable pageRequest = PageRequest.of(
+                searchCondition.getPageNum(),
+                searchCondition.getPageSize(),
+                Sort.by(searchCondition.getSortDirection(),searchCondition.getSortField())
+        );
+        return  productRepository.findAll(pageRequest);
+    }
+
+    @Override
     @Transactional
     public ProductEntity saveWithImage(ProductEntity product, MultipartFile image) {
         ProductEntity savedProduct = productRepository.save(product);
@@ -65,6 +80,11 @@ public class ProductServiceImpl implements ProductService {
 
         return savedProduct;
     }
+
+//    @Override
+//    public ProductEntity saveProductWithImage(ProductDto productDto, MultipartFile image) {
+//
+//         }
 
     @Override
     public void deleteById(Long productId) {

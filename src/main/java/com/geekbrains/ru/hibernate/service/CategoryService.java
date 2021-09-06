@@ -1,12 +1,14 @@
 package com.geekbrains.ru.hibernate.service;
 
 import com.geekbrains.ru.hibernate.domain.CategoryEntity;
+import com.geekbrains.ru.hibernate.domain.dto.CategoryDto;
 import com.geekbrains.ru.hibernate.domain.dto.CategoryTree;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public interface CategoryService {
@@ -21,5 +23,7 @@ public interface CategoryService {
     Page<CategoryEntity> findAllByPage(Pageable pageable);
 
     CategoryTree getCategoryTree();
+
+    Set<CategoryDto> getCategoriesByProductId(Long id);
 }
 
