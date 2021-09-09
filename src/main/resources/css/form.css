@@ -1,0 +1,67 @@
+body {
+    font-family: sans-serif;
+    background: honeydew;
+    background-size: cover;
+    margin-left: 50px;
+}
+
+.top {
+    border: 1px solid #910606;
+}
+
+.menu {
+    border: 1px solid green;
+    margin-top: 15px;
+
+
+}
+.header{
+    border: 1px solid rgb(6, 205, 255);
+    width: 500px;
+    height: 450px;
+    box-sizing: border-box;
+
+
+}
+.text{
+    font-size: 16px;
+    line-height: 26px;
+    color: #1F3F68;
+}
+.heading {
+    font-size: 64px;
+    color: #1F3F68;
+}
+
+.heading_contact{
+    font-weight: 500;
+    font-size: 44px;
+    text-align: center;
+}
+.heading_h3{
+    font-size: 36px;
+    text-align: center;
+}
+.heading_h4{
+    font-size: 20px;
+    line-height: 30px;
+    color: #1F3F68;
+}
+.input_textarea{
+    border: 1px solid #356EAD;
+    box-sizing: border-box;
+    border-radius: 10px;
+    opacity: 0.4;
+}
+.submit{
+    background: #5A98D0;
+    box-shadow: 5px 20px 50px rgba(16, 112, 177, 0.2);
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 26px;
+    text-align: center;
+    color: #FFFFFF;
+    text-transform: uppercase;
+
+}
