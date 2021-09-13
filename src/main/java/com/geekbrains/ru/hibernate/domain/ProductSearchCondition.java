@@ -10,4 +10,6 @@ public class ProductSearchCondition {
 
     private int pageNum;
     private Integer pageSize = 10;
+
+    private String titleFilter;
 }

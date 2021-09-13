@@ -32,5 +32,10 @@ public class MvcConfiguration implements WebMvcConfigurer {
             cartMap = new HashMap<>();
         return cartMap;
     }
+
+    @Bean
+    public String querySubSelect() {
+        return "select c.id from category c";
+    }
 }
 
