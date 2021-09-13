@@ -1,20 +1,19 @@
 package com.geekbrains.ru.hibernate.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 
 @Data
 @Entity
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "user")
+@Table(name = "users")
+@ToString(exclude = "roleEntities")
+@EqualsAndHashCode(exclude = {"id", "roleEntities"})
 public class UserEntity {
 
 
@@ -23,12 +22,8 @@ public class UserEntity {
     @Column(name = "id", nullable = false)
     private long id;
 
-    @NotNull(message = "Имя обязателено")
-    @Column(name = "first_name", length = 50, nullable = false)
-    private String firstName;
-
-    @Column(name = "last_name", length = 50)
-    private String lastName;
+    @NotBlank(message = "Имя пользователя обязательно!")
+    private String username;
 
     @NotNull(message = "Email обязателен")
     @Column(name = "email", length = 50, unique = true)
@@ -38,17 +33,19 @@ public class UserEntity {
     @Column(name = "password", length = 100)
     private String password;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private RoleEntity role;
+    private boolean enabled = true;
 
+    @ManyToMany
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Collection<RoleEntity> roles;
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + firstName + '\'' +
-                ", lastName=" + lastName +
+                ", name='" + username +
                 ", email=" + email +
                 '}';
     }

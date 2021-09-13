@@ -40,10 +40,7 @@ public class CartController {
         if (cartsRepository.get(userId) == null) {
             cartsRepository.put(userId, new ArrayList<>());
         }
-        if (productRepository.existsById(productId)) {
             cartsRepository.get(userId).add(productRepository.findById(productId).get());
-        }
-
     }
 
     @DeleteMapping(PRODUCT + "/{productId}")

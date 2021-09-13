@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Продукты</title>
@@ -39,8 +39,9 @@
                         <p th:text="'Категория: ' + ${p.getCategoriesName()}" class="card-text">Category</p>
 
                         <div class="justify-content ">
-                            <a th:href="@{/product/form(id=${p.id})}" href="#" class="btn btn-primary">Редактировать</a>
-                            <a th:href="@{/product/delete(id=${p.id})}" href="#" class="btn btn-danger">Удалить</a>
+                            <a th:href="@{/cart/add-to-cart(id=${product.id})}" href="#" class="btn btn-primary mb-2">В корзину</a>
+                            <a th:href="@{/product/form(id=${product.id})}" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')" href="#" class="btn btn-primary">Редактировать</a>
+                            <a th:href="@{/product/delete(id=${product.id})}" sec:authorize="hasRole('ADMIN')" href="#" class="btn btn-danger">Удалить</a>
                         </div>
                     </div>
                 </div>
